@@ -28,6 +28,12 @@ extension PromiseError: CustomNSError {
     }
 }
 
+public extension Promise {
+    var asOBJC: JTPromise {
+        JTPromise(base: then { $0 as Any? })
+    }
+}
+
 @objc public class JTPromiseSettledResult: NSObject {
     @objc public let result: Any?
     @objc public let error: Error?
