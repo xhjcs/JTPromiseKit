@@ -75,6 +75,10 @@ public extension Promise {
             if let nextPromise = nextValue as? JTPromise {
                 return nextPromise.base
             }
+            // 如果外部传入的handler是一个没返回值的闭包, 其返回值实际上是Void, 则nextValue会是Void, 传给OC后会崩溃, 此处兼容之
+            if nextValue is Void {
+                return Promise(resolve: nil)
+            }
             return Promise(resolve: nextValue)
         }
         return JTPromise(base: swiftPromise)
@@ -86,6 +90,10 @@ public extension Promise {
             let nextValue = handler(error)
             if let nextPromise = nextValue as? JTPromise {
                 return nextPromise.base
+            }
+            // 如果外部传入的handler是一个没返回值的闭包, 其返回值实际上是Void, 则nextValue会是Void, 传给OC后会崩溃, 此处兼容之
+            if nextValue is Void {
+                return Promise(resolve: nil)
             }
             return Promise(resolve: nextValue)
         }
